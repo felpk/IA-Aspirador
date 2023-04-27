@@ -9,6 +9,7 @@ table = [
     [(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]
 ]
 
+
 def mover(direção, posição_atual):
     if direção == 'norte':
         posição_atual[0] -= 1
@@ -69,3 +70,5 @@ imprimir_ambiente()
 print("\nPosicao atual: ", busca_ambiente())
 
 imprimir_ambiente()
+
+print(table)
