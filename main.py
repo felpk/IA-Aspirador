@@ -4,10 +4,11 @@ limpo = 0
 posicao = [1, 1]    #posicao inicial
 #orientacao = 'norte'   #orientacao inicial
 table = [
-    [(0, 0), sujo], [(0, 1), sujo], [(0, 2), limpo],
-    [(1, 0), limpo], [(1, 1), limpo], [(1, 2), sujo],
-    [(2, 0), sujo], [(2, 1), limpo], [(2, 2), sujo]
+    [[(0, 0), sujo], [(0, 1), sujo], [(0, 2), limpo]],
+    [[(1, 0), limpo], [(1, 1), limpo], [(1, 2), sujo]],
+    [[(2, 0), sujo], [(2, 1), limpo], [(2, 2), sujo]]
 ]
+
 
 def mover(direção, posição_atual):
     if direção == 'frente':
@@ -32,6 +33,20 @@ def mover(direção, posição_atual):
     return posição_atual
 
 
+def aspirar(posição_atual, table):
+
+    i, j = posição_atual[0], posição_atual[1]
+
+    if table[i][j][1] == 0:
+        print(f'Espaço [{i, j}] já está limpo!\n')
+
+    elif table[i][j][1] == 1:
+        table[i][j][1] = 0
+        print(f'Espaço [{i, j}] Aspirado!\n')
+
+
+
+
 teste = ['frente',  #0, 1
          'frente',  #0, 1
          'direita', #0, 2
@@ -42,23 +57,11 @@ teste = ['frente',  #0, 1
          'esquerda']#1, 0
 aspirador = posicao
 
-def aspirar():
-    global i
-    global j 
-    i = posicao[0]
-    j = posicao[1]
-
-    if table[i][j] == limpo:
-        print(f'Espaço [{i, j}] já está limpo!\n')
-
-    elif table[i][j] == sujo:
-        table[i][j] = limpo
-        print(f'Espaço [{i, j}] limpo!\n')
-
-
-
 
 for i, pos in enumerate(teste):
     aspirador = mover(pos, aspirador)
-    print(aspirador)
+    #print(aspirador)
+    aspirar(aspirador, table)
 
+
+print(table)
