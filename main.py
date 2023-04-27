@@ -133,28 +133,6 @@ def encontrar_aspirar_sujos(table, sujos):
                 table = aspirar(posicao_atual, table)
     return qtd_aspirar
 
-
-
-# teste = ['norte',  #0, 1
-#          'norte',  #0, 1
-#          'direita', #0, 2
-#          'sul',    #1, 2
-#          'sul',    #2, 2
-#          'esquerda', #2, 1
-#          'norte',  #1, 1
-#          'esquerda']#1, 0
-
-
-
-# for i, pos in enumerate(teste):
-#     posicao = mover(pos, posicao)
-#     qtd_movimentos += 1
-#     print(posicao)
-#     table = aspirar(posicao, table)
-#     qtd_aspirar += 1
-
-
-
 #execução
 
 imprimir_ambiente(table)
