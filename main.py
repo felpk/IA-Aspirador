@@ -2,7 +2,7 @@ sujo = 1
 limpo = 0
 
 posicao = [1, 1]    #posicao inicial
-#posicao_atual = posicao #posicao atual
+posicao_atual = posicao #posicao atual
 
 qtd_movimentos = 0
 qtd_aspirar = 0
@@ -16,17 +16,25 @@ table = [
 
 
 def mover(direção, posição_atual):
+    global qtd_movimentos
+
+    #posicao_atual = posicao_atual.copy()
+
     if direção == 'norte':
         posição_atual[0] -= 1
+        print(f'moveu-se para o norte ^', end='')
         
     elif direção == 'direita':
         posição_atual[1] += 1
+        print(f'moveu-se para a direita >', end='')
     
     elif direção == 'esquerda':
         posição_atual[1] -= 1
+        print(f'moveu-se para a esquerda <', end='')
     
     elif direção == 'sul':
         posição_atual[0] += 1
+        print(f'moveu-se para o sul v', end='')
         
         
     if posição_atual[0] == -1:
@@ -34,22 +42,11 @@ def mover(direção, posição_atual):
     if posição_atual[1] == -1:
         posição_atual[1] += 1
     
+    qtd_movimentos = qtd_movimentos + 1
+    print(f'{posição_atual}')
     return posição_atual
 
 
-
-def aspirar(posição_atual, table):
-
-    i, j = posição_atual[0], posição_atual[1]
-
-    if table[i][j][1] == 0:
-        print(f'Espaço [{i, j}] já está limpo!\n')
-
-    elif table[i][j][1] == 1:
-        table[i][j][1] = 0
-        print(f'Espaço [{i, j}] Aspirado!\n')
-    
-    return table
 
 
 def imprimir_ambiente(table):    # Imprimir matriz ambiente onde 0 é limpo e 1 é sujo Funcionando
@@ -59,7 +56,8 @@ def imprimir_ambiente(table):    # Imprimir matriz ambiente onde 0 é limpo e 1 
 
 
 
-def encontrar_sujos(table):
+def buscar_sujos(table):
+    global sujos
     sujos = []
     for i in range(len(table)):
         for j in range(len(table[i])):
@@ -68,29 +66,95 @@ def encontrar_sujos(table):
     return sujos
 
 
+def mover_para(posicao_atual, posicao_destino):
+    direcao_norte = 'norte'
+    direcao_sul = 'sul'
+    direcao_esquerda = 'esquerda'
+    direcao_direita = 'direita'
+    nova_posicao = posicao_atual.copy()
+
+    # Movendo o aspirador norte/sul para chegar na posição destino
+    while nova_posicao[0] != posicao_destino[0]:
+        if nova_posicao[0] < posicao_destino[0]:
+            nova_posicao = mover(direcao_sul, nova_posicao)
+        else:
+            nova_posicao = mover(direcao_norte, nova_posicao)
+
+    # Movendo o aspirador na horizontal para chegar na posição destino
+    while nova_posicao[1] != posicao_destino[1]:
+        if nova_posicao[1] < posicao_destino[1]:
+            nova_posicao = mover(direcao_direita, nova_posicao)
+        else:
+            nova_posicao = mover(direcao_esquerda, nova_posicao)
+
+    return nova_posicao
 
 
-teste = ['norte',  #0, 1
-         'norte',  #0, 1
-         'direita', #0, 2
-         'sul',    #1, 2
-         'sul',    #2, 2
-         'esquerda', #2, 1
-         'norte',  #1, 1
-         'esquerda']#1, 0
+def eficiencia(qtd_movimentos, qtd_aspirar):
+    if qtd_aspirar != 0:
+        return (f'Qtd movimentos: {qtd_movimentos}\nQtd aspirações: {qtd_aspirar}\n{qtd_aspirar/qtd_movimentos * 100} %')
+    else: 
+        return f'Quantidade de movimentos é {qtd_movimentos}.'
+    
+    
+def aspirar(posição_atual, table):
+    global qtd_aspirar
 
+    i, j = posição_atual[0], posição_atual[1]
+
+    if table[i][j][1] == 0:
+        print(f'Espaço [{i, j}] já está limpo!\n')
+
+    elif table[i][j][1] == 1:
+        table[i][j][1] = 0
+        print(f'Espaço [{i, j}] Aspirado!\n')
+        qtd_aspirar += 1
+
+
+    return table
+
+def encontrar_aspirar_sujos(table, sujos):
+    posicao_atual = [1, 1]
+    global qtd_aspirar
+    global qtd_movimentos
+    print(f'posicao inicial: {posicao_atual}')
+    for i in range(len(table)):           # Itera pelos elementos da table
+
+        for j in range(len(table[i])):      # Itera dentro de cada elemento da table
+            if table[i][j][1] == 1:         # Se quadrado atual == sujo
+                #posicao_atual = [i, j]                                  
+                posicao_atual = mover_para(posicao_atual, [i, j])
+                print("Posição atual:", posicao_atual)
+                table = aspirar(posicao_atual, table)
+    return qtd_aspirar
+
+
+
+# teste = ['norte',  #0, 1
+#          'norte',  #0, 1
+#          'direita', #0, 2
+#          'sul',    #1, 2
+#          'sul',    #2, 2
+#          'esquerda', #2, 1
+#          'norte',  #1, 1
+#          'esquerda']#1, 0
+
+
+
+# for i, pos in enumerate(teste):
+#     posicao = mover(pos, posicao)
+#     qtd_movimentos += 1
+#     print(posicao)
+#     table = aspirar(posicao, table)
+#     qtd_aspirar += 1
+
+
+
+#execução
 
 imprimir_ambiente(table)
-
-for i, pos in enumerate(teste):
-    posicao = mover(pos, posicao)
-    qtd_movimentos += 1
-    print(posicao)
-    table = aspirar(posicao, table)
-    qtd_aspirar += 1
-
+sujos = buscar_sujos(table)
+encontrar_aspirar_sujos(table, sujos)
 imprimir_ambiente(table)
 
-eficiencia =  (f'{(qtd_movimentos/qtd_aspirar)*100}%')
-
-print(f'Movimentos/Aspirações: {qtd_movimentos} / {qtd_aspirar} \n\nEficiência de {eficiencia}.\n ')
+print(eficiencia(qtd_movimentos, qtd_aspirar))
