@@ -2,12 +2,12 @@ sujo = 1
 limpo = 0
 
 posicao = [1, 1]    #posicao inicial
-posicao_atual = posicao #posicao atual
+#posicao_atual = posicao #posicao atual
 
 table = [
-    [(0, 0), sujo],  [(0, 1), sujo],  [(0, 2), limpo],
-    [(1, 0), limpo], [(1, 1), limpo], [(1, 2), sujo],
-    [(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]
+    [[(0, 0), sujo],  [(0, 1), sujo],  [(0, 2), limpo]],
+    [[(1, 0), limpo], [(1, 1), sujo], [(1, 2), sujo]],
+    [[(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]]
 ]
 
 
@@ -45,34 +45,43 @@ def aspirar(posição_atual, table):
     elif table[i][j][1] == 1:
         table[i][j][1] = 0
         print(f'Espaço [{i, j}] Aspirado!\n')
-        
+    
+    return table
 
-# for i, pos in enumerate(teste):
-#     aspirador = mover(pos, aspirador)
-#     print(aspirador)
 
-def imprimir_ambiente():    # Imprimir matriz ambiente onde 0 é limpo e 1 é sujo Funcionando
-    print()
-    for i in range(3):
-        for j in range(3):
-            index = i * 3 + j
-            print(table[index][1], end=' ')
-        print()
+def imprimir_ambiente(table):    # Imprimir matriz ambiente onde 0 é limpo e 1 é sujo Funcionando
+    for i in range(len(table)):
+        print(table[i])
     print()
 
 
 
-teste = ['frente',  #0, 1
-         'frente',  #0, 1
+def encontrar_sujos(table):
+    sujos = []
+    for i in range(len(table)):
+        for j in range(len(table[i])):
+            if table[i][j][1] == 1:
+                sujos.append((i, j))
+    return sujos
+
+
+
+
+teste = ['norte',  #0, 1
+         'norte',  #0, 1
          'direita', #0, 2
-         'tras',    #1, 2
-         'tras',    #2, 2
+         'sul',    #1, 2
+         'sul',    #2, 2
          'esquerda', #2, 1
-         'frente',  #1, 1
+         'norte',  #1, 1
          'esquerda']#1, 0
 
 
+imprimir_ambiente(table)
+
 for i, pos in enumerate(teste):
     posicao = mover(pos, posicao)
-    #print(aspirador)
-    aspirar(posicao, table)
+    print(posicao)
+    table = aspirar(posicao, table)
+
+imprimir_ambiente(table)
