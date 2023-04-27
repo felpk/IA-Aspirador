@@ -1,3 +1,5 @@
+from collections import deque
+
 sujo = 1
 limpo = 0
 
@@ -8,6 +10,9 @@ qtd_movimentos = 0
 qtd_aspirar = 0
 
 table = [
+    [[(0, 0), sujo],  [(0, 1), sujo],  [(0, 2), limpo]],
+    [[(1, 0), limpo], [(1, 1), sujo], [(1, 2), sujo]],
+    [[(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]]
     [[(0, 0), sujo],  [(0, 1), sujo],  [(0, 2), limpo]],
     [[(1, 0), limpo], [(1, 1), sujo], [(1, 2), sujo]],
     [[(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]]
@@ -24,11 +29,11 @@ def mover(direção, posição_atual):
         posição_atual[0] -= 1
         print(f'moveu-se para o norte ^', end='')
         
-    elif direção == 'direita':
+    elif direção == 'oeste':
         posição_atual[1] += 1
         print(f'moveu-se para a direita >', end='')
     
-    elif direção == 'esquerda':
+    elif direção == 'leste':
         posição_atual[1] -= 1
         print(f'moveu-se para a esquerda <', end='')
     
@@ -36,7 +41,7 @@ def mover(direção, posição_atual):
         posição_atual[0] += 1
         print(f'moveu-se para o sul v', end='')
         
-        
+    # Verifica se a posição atual ultrapassa os limites da matriz
     if posição_atual[0] == -1:
         posição_atual[0] += 1
     if posição_atual[1] == -1:
