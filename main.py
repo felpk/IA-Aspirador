@@ -34,8 +34,3 @@ def girar_direita():
         orientacao = 'leste'
     elif orientacao == 'leste':
         orientacao = 'norte'
-
-girar_direita()
-
-
-
