@@ -2,12 +2,13 @@ sujo = 1
 limpo = 0
 
 posicao = [1, 1]    #posicao inicial
-#orientacao = 'norte'   #orientacao inicial
+
 table = [
     [[(0, 0), sujo], [(0, 1), sujo], [(0, 2), limpo]],
     [[(1, 0), limpo], [(1, 1), limpo], [(1, 2), sujo]],
     [[(2, 0), sujo], [(2, 1), limpo], [(2, 2), sujo]]
 ]
+
 
 
 def mover(direção, posição_atual):
@@ -28,9 +29,9 @@ def mover(direção, posição_atual):
         posição_atual[0] += 1
     if posição_atual[1] == -1:
         posição_atual[1] += 1
-        
     
     return posição_atual
+
 
 
 def aspirar(posição_atual, table):
@@ -46,7 +47,6 @@ def aspirar(posição_atual, table):
 
 
 
-
 teste = ['frente',  #0, 1
          'frente',  #0, 1
          'direita', #0, 2
@@ -55,13 +55,10 @@ teste = ['frente',  #0, 1
          'esquerda', #2, 1
          'frente',  #1, 1
          'esquerda']#1, 0
-aspirador = posicao
 
+#aspirador = posicao
 
 for i, pos in enumerate(teste):
-    aspirador = mover(pos, aspirador)
+    posicao = mover(pos, posicao)
     #print(aspirador)
-    aspirar(aspirador, table)
-
-
-print(table)
+    aspirar(posicao, table)
