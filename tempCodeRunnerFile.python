@@ -1,0 +1,104 @@
+CLEAN = 0
+DIRTY = 1
+
+position = [1, 1]    #posicao inicial
+current_position = position #posicao atual
+
+qtd_movimentos = 0
+qtd_aspirar = 0
+
+table = [
+    [[(0, 0), DIRTY],  [(0, 1), DIRTY],  [(0, 2), CLEAN]],
+    [[(1, 0), CLEAN], [(1, 1), DIRTY], [(1, 2), DIRTY]],
+    [[(2, 0), DIRTY],  [(2, 1), CLEAN], [(2, 2), DIRTY]]
+]
+
+def move(direction, current_position, table):
+    row, col = current_position
+    if direction == 'north':
+        row -= 1
+    elif direction == 'south':
+        row += 1
+    elif direction == 'west':
+        col -= 1
+    elif direction == 'east':
+        col += 1
+
+    if row < 0:
+        row = 0
+    elif row >= len(table):
+        row = len(table) - 1
+    if col < 0:
+        col = 0
+    elif col >= len(table[0]):
+        col = len(table[0]) - 1
+
+    return (row, col)
+
+def print_table(table):
+    for row in table:
+        print(row)
+    print()
+
+def show_movement(table, position):
+    row, col = position
+    table[row][col].append('X')
+    print_table(table)
+    table[row][col].remove('X')
+
+def find_dirty(table):
+    dirty_positions = []
+    for i, row in enumerate(table):
+        for j, cell in enumerate(row):
+            if cell[1] == DIRTY:
+                dirty_positions.append((i, j))
+    return dirty_positions
+
+def go_to(position, destination, table):
+    row, col = position
+    dest_row, dest_col = destination
+    while row != dest_row:
+        if row < dest_row:
+            row += 1
+        else:
+            row -= 1
+        position = (row, col)
+        position = move('south', position, table) if row < dest_row else move('north', position, table)
+        show_movement(table, position)
+    while col != dest_col:
+        if col < dest_col:
+            col += 1
+        else:
+            col -= 1
+        position = (row, col)
+        position = move('east', position, table) if col < dest_col else move('west', position, table)
+        show_movement(table, position)
+    return position
+
+def clean(position, table):
+    row, col = position
+    if table[row][col][1] == CLEAN:
+        print(f'Position [{row}, {col}] is already clean!\n')
+    elif table[row][col][1] == DIRTY:
+        table[row][col][1] = CLEAN
+        print(f'Position [{row}, {col}] cleaned!\n')
+
+def find_and_clean(table):
+    position = (1, 1)
+    movements = 0
+    cleanings = 0
+    print(f'Starting position: {position}')
+    dirty_positions = find_dirty(table)
+    while dirty_positions:
+        for dirty_pos in dirty_positions:
+            position = go_to(position, dirty_pos, table)
+            print("Current position:", position)
+            clean(position, table)
+            cleanings += 1
+        movements += len(dirty_positions)
+        dirty_positions = find_dirty(table)
+    return (f'Movements: {movements}\nCleanings: {cleanings}\nEfficiency: {cleanings/movements*100:.2f} %')
+
+print_table(table)
+find_and_clean(table)
+print_table(table)

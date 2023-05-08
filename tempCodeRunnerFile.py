@@ -1,49 +1,38 @@
-'''
-Alunos: 
-CHRISTIAN DE JESUS DA COSTA MARINHO
-MATHEUS FELIPE CECIM DA SILVA
-'''
-import random
+sujo = 1
+limpo = 0
 
-#VARIAVEIS GLOBAIS
 posicao = [1, 1]    #posicao inicial
 posicao_atual = posicao #posicao atual
+
 qtd_movimentos = 0
 qtd_aspirar = 0
 
-
-#Gera uma matriz aleatoria com lugares sujos e limpos
-def gerar_tabela_aleatoria():
-    table = []
-    for i in range(3):
-        row = []
-        for j in range(3):
-            valor = random.randint(0, 1)
-            celula = [(i, j), valor]
-            row.append(celula)
-        table.append(row)
-    return table
+table = [
+    [[(0, 0), sujo],  [(0, 1), sujo],  [(0, 2), limpo]],
+    [[(1, 0), limpo], [(1, 1), sujo], [(1, 2), sujo]],
+    [[(2, 0), sujo],  [(2, 1), limpo], [(2, 2), sujo]]
+]
 
 
-#Move o Aspirador dentro da matriz
+
 def mover(direção, posição_atual, table):
     global qtd_movimentos
 
     if direção == 'norte':
         posição_atual[0] -= 1
-        print(f'moveu-se para o norte\n')
+        print(f'moveu-se para o norte ^')#, end='')
         
     elif direção == 'oeste':
         posição_atual[1] += 1
-        print(f'moveu-se para a direita\n')
+        print(f'moveu-se para a direita >')#, end='')
     
     elif direção == 'leste':
         posição_atual[1] -= 1
-        print(f'moveu-se para a esquerda\n')
+        print(f'moveu-se para a esquerda <')#, end='')
     
     elif direção == 'sul':
         posição_atual[0] += 1
-        print(f'moveu-se para o sul\n')
+        print(f'moveu-se para o sul v')#, end='')
         
     # Verifica se a posição atual ultrapassa os limites da matriz
     if posição_atual[0] == -1:
@@ -53,25 +42,36 @@ def mover(direção, posição_atual, table):
     
     qtd_movimentos = qtd_movimentos + 1
     mostar_andando(table, posição_atual)
+    #print(f'{posição_atual}\n')
     return posição_atual
 
 
-# Imprimir matriz ambiente onde 0 é limpo e 1 é sujo
-def imprimir_ambiente(table):    
-    for row in table:
-        print(row)
+
+
+def imprimir_ambiente(table):    # Imprimir matriz ambiente onde 0 é limpo e 1 é sujo Funcionando
+    for i in range(len(table)):
+        print(table[i])
     print()
 
 
-#Mostra o aspirador X andando dentro da matriz
+
 def mostar_andando(table, posição_atual):
     i, j = posição_atual
-    table[i][j].append('X')
+    table[i][j].append('x')
     imprimir_ambiente(table)
-    table[i][j].remove('X')
+    table[i][j].remove('x')
 
 
-#Define os lacais atuais e o local de destino do aspirador
+def buscar_sujos(table):
+    global sujos
+    sujos = []
+    for i in range(len(table)):
+        for j in range(len(table[i])):
+            if table[i][j][1] == 1:
+                sujos.append((i, j))
+    return sujos
+
+
 def mover_para(posicao_atual, posicao_destino, table):
     direcao_norte = 'norte'
     direcao_sul = 'sul'
@@ -96,15 +96,13 @@ def mover_para(posicao_atual, posicao_destino, table):
     return nova_posicao
 
 
-#Calcula a Eficiencia 
 def eficiencia(qtd_movimentos, qtd_aspirar):
     if qtd_aspirar != 0:
         return (f'Qtd movimentos: {qtd_movimentos}\nQtd aspirações: {qtd_aspirar}\n{qtd_aspirar/qtd_movimentos * 100} %')
     else: 
         return f'Quantidade de movimentos é {qtd_movimentos}.'
     
-   
-#Aspira os lugares sujos 
+    
 def aspirar(posição_atual, table):
     global qtd_aspirar
 
@@ -118,31 +116,28 @@ def aspirar(posição_atual, table):
         print(f'Espaço [{i, j}] Aspirado!\n')
         qtd_aspirar += 1
 
+
     return table
 
-
-#Varre o ambiente com o sensor em busca de lugares sujos e move o Aspirador X para lá
 def encontrar_aspirar_sujos(table):
     posicao_atual = [1, 1]
     global qtd_aspirar
     global qtd_movimentos
-    print(f'posicao inicial: {posicao_atual}\n')
-    # Itera pelos elementos da table
-    for i in range(len(table)):
-        # Itera dentro de cada elemento da table
-        for j in range(len(table[i])):
-            # Se quadrado atual == sujo
-            if table[i][j][1] == 1:                                 
+    print(f'posicao inicial: {posicao_atual}')
+    for i in range(len(table)):           # Itera pelos elementos da table
+
+        for j in range(len(table[i])):      # Itera dentro de cada elemento da table
+            if table[i][j][1] == 1:         # Se quadrado atual == sujo                                 
                 posicao_atual = mover_para(posicao_atual, [i, j], table)
+                print("Posição atual:", posicao_atual)
                 table = aspirar(posicao_atual, table)
     return qtd_aspirar
 
+#execução
 
-
-
-#EXECUÇÃO
-table = gerar_tabela_aleatoria()
 imprimir_ambiente(table)
-encontrar_aspirar_sujos(table)
+sujos = buscar_sujos(table)
+encontrar_aspirar_sujos(table, sujos)
 imprimir_ambiente(table)
+
 print(eficiencia(qtd_movimentos, qtd_aspirar))
